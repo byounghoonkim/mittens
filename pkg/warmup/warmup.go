@@ -30,14 +30,14 @@ type Warmup struct {
 	Target                   Target
 	MaxDurationSeconds       int
 	Concurrency              int
-	HttpRequests             chan http.Request
-	HttpHeaders              []string
+	HTTPRequests             chan http.Request
+	HTTPHeaders              []string
 	GrpcRequests             chan grpc.Request
 	RequestDelayMilliseconds int
 }
 
 // Run sends requests to the target using goroutines.
-func (w Warmup) Run(hasHttpRequests bool, hasGrpcRequests bool, requestsSentCounter *int) {
+func (w Warmup) Run(hasHTTPRequests bool, hasGrpcRequests bool, requestsSentCounter *int) {
 	rand.Seed(time.Now().UnixNano()) // initialize seed only once to prevent deterministic/repeated calls every time we run
 
 	var wg sync.WaitGroup
@@ -45,7 +45,7 @@ func (w Warmup) Run(hasHttpRequests bool, hasGrpcRequests bool, requestsSentCoun
 	if hasGrpcRequests {
 		// connect to gRPC server once and only if there are gRPC requests
 		log.Print("gRPC client connecting...")
-		connErr := w.Target.grpcClient.Connect(w.HttpHeaders)
+		connErr := w.Target.grpcClient.Connect(w.HTTPHeaders)
 
 		if connErr != nil {
 			log.Printf("gRPC client connect error: %v", connErr)
@@ -54,18 +54,18 @@ func (w Warmup) Run(hasHttpRequests bool, hasGrpcRequests bool, requestsSentCoun
 				log.Printf("Spawning new go routine for gRPC requests")
 				wg.Add(1)
 				go safe.Do(func() {
-					w.GrpcWarmupWorker(&wg, w.GrpcRequests, w.HttpHeaders, w.RequestDelayMilliseconds, requestsSentCounter)
+					w.GrpcWarmupWorker(&wg, w.GrpcRequests, w.HTTPHeaders, w.RequestDelayMilliseconds, requestsSentCounter)
 				})
 			}
 		}
 	}
 
-	if hasHttpRequests {
+	if hasHTTPRequests {
 		for i := 1; i <= w.Concurrency; i++ {
 			log.Printf("Spawning new go routine for HTTP requests")
 			wg.Add(1)
 			go safe.Do(func() {
-				w.HTTPWarmupWorker(&wg, w.HttpRequests, util.ToHeaders(w.HttpHeaders), w.RequestDelayMilliseconds, requestsSentCounter)
+				w.HTTPWarmupWorker(&wg, w.HTTPRequests, util.ToHeaders(w.HTTPHeaders), w.RequestDelayMilliseconds, requestsSentCounter)
 			})
 		}
 	}

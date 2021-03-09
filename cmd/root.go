@@ -67,9 +67,9 @@ func run() int {
 
 	// this is used to decide on whether we should create goroutines for HTTP and/or gRPC requests
 	// since requests are passed to a channel after that point we need to store that info and pass it
-	var hasHttpRequests bool
+	var hasHTTPRequests bool
 	if len(opts.HTTP.Requests) > 0 {
-		hasHttpRequests = true
+		hasHTTPRequests = true
 	}
 	var hasGrpcRequests bool
 	if len(opts.Grpc.Requests) > 0 {
@@ -86,12 +86,12 @@ func run() int {
 				Target:                   target,
 				MaxDurationSeconds:       opts.GetMaxDurationSeconds(),
 				Concurrency:              opts.GetConcurrency(),
-				HttpRequests:             httpRequests,
+				HTTPRequests:             httpRequests,
 				GrpcRequests:             grpcRequests,
-				HttpHeaders:              opts.GetWarmupHTTPHeaders(),
+				HTTPHeaders:              opts.GetWarmupHTTPHeaders(),
 				RequestDelayMilliseconds: opts.RequestDelayMilliseconds,
 			}
-			wp.Run(hasHttpRequests, hasGrpcRequests, &requestsSentCounter)
+			wp.Run(hasHTTPRequests, hasGrpcRequests, &requestsSentCounter)
 		} else {
 			log.Print("Target still not ready. Giving up!")
 		}

@@ -11,3 +11,6 @@ integration-tests:
 
 docker:
 	@docker build -t expediagroup/mittens:latest .
+
+lint:
+	@golint ./...

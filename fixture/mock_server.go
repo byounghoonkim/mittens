@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc/test/grpc_testing"
 )
 
+// PathResponseHandler represents PathHandler function.
 type PathResponseHandler struct {
 	Path            string
 	PathHandlerFunc func(rw http.ResponseWriter, r *http.Request)
@@ -36,9 +37,9 @@ func StartGrpcTargetTestServer(port int) *grpc.Server {
 	return server
 }
 
-// StartHttpTargetTestServer starts a HTTP server on the provided port
+// StartHTTPTargetTestServer starts a HTTP server on the provided port
 // Optionally, it receives a list of handler functions
-func StartHttpTargetTestServer(port int, pathHandlers []PathResponseHandler) *http.Server {
+func StartHTTPTargetTestServer(port int, pathHandlers []PathResponseHandler) *http.Server {
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	})

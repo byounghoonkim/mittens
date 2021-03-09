@@ -17,15 +17,16 @@
 package cmd
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	"google.golang.org/grpc"
 	"mittens/fixture"
 	"mittens/pkg/probe"
 	"mittens/pkg/safe"
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc"
 )
 
 var mockHttpServer *http.Server
@@ -208,7 +209,7 @@ func TestGrpcAndHttp(t *testing.T) {
 }
 
 func setup() {
-	mockHttpServer = fixture.StartHttpTargetTestServer(8080, []fixture.PathResponseHandler{})
+	mockHttpServer = fixture.StartHTTPTargetTestServer(8080, []fixture.PathResponseHandler{})
 	mockGrpcServer = fixture.StartGrpcTargetTestServer(50051)
 }
 
